@@ -63,6 +63,27 @@ app.get('/api', function apiIndex(req, res) {
 });
 
 app.get('/api/profile', function apiProfile(req, res){
+  let bday = new Date(1976,9,1);
+  let now = new Date();
+  let diffDate = now - bday;
+  let awake = true;
+  let arTime = now.toTimeString().split(":");
+  let hour = parseInt(arTime[0]);
+  let min = parseInt(arTime[1]);
+
+  if (hour<8){
+    awake = false;
+  }
+  else if (hour === 22 && min > 0) {
+    awake = false;
+  }
+  else if (hour > 22){
+    awake = false;
+  }
+
+  diffDate = Math.floor(diffDate/86400000);
+
+
   res.json({
     name: "Dan Lombardino",
     gitHubUserName: "calJersey",
@@ -70,6 +91,8 @@ app.get('/api/profile', function apiProfile(req, res){
     gitHubProfileImage: "https://avatars3.githubusercontent.com/u/14287505?v=4&s=460",
     personalWebSites: ["http://secret-hamlet-82924.herokuapp.com","http://www.vitad.com"],
     currentCity: "Oakland, CA",
+    daysSinceIWasBorn: diffDate,
+    IAmAwake: awake,
     familyMembers: [
       {name:"Angela", relationship:"Mom", age: 70},
       {name:"Ronin", relationship:"Son", age:14},
@@ -137,7 +160,7 @@ app.put('/api/vacation/:vacationId', function(req, res){
   });
 })
 
-app.delete('api/vacation/:vacationId', function(req,res){
+app.delete('/api/vacation/:vacationId', function(req, res){
   db.Vacation.findOneAndRemove({_id: req.params.vacationId}, function(err,vacation){
     if (err){
       res.status(500).json({error: err.message});
