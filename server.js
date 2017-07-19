@@ -47,14 +47,29 @@ app.get('/api', function apiIndex(req, res) {
   // It would be seriously overkill to save any of this to your database.
   // But you should change almost every line of this response.
   res.json({
-    woopsIForgotToDocumentAllMyEndpoints: true, // CHANGE ME ;)
     message: "Welcome to my personal api! Here's what you need to know!",
-    documentationUrl: "https://github.com/example-username/express-personal-api/README.md", // CHANGE ME
-    baseUrl: "http://YOUR-APP-NAME.herokuapp.com", // CHANGE ME
+    documentationUrl: "https://github.com/caljersey/express-personal-api/README.md",
+    baseUrl: "http://secret-hamlet-82924.herokuapp.com",
     endpoints: [
       {method: "GET", path: "/api", description: "Describes all available endpoints"},
-      {method: "GET", path: "/api/profile", description: "Data about me"}, // CHANGE ME
-      {method: "POST", path: "/api/campsites", description: "E.g. Create a new campsite"} // CHANGE ME
+      {method: "GET", path: "/api/profile", description: "Data about me"},
+      {method: "POST", path: "/api/campsites", description: "E.g. Create a new campsite"}
+    ]
+  })
+});
+
+app.get('/api/profile', function apiProfile(req, res){
+  res.json({
+    name: "Dan Lombardino",
+    gitHubUserName: "calJersey",
+    gitHubLink: "https://github.com/caljersey",
+    gitHubProfileImage: "https://avatars3.githubusercontent.com/u/14287505?v=4&s=460",
+    personalWebSites: ["http://secret-hamlet-82924.herokuapp.com","http://www.vitad.com"],
+    currentCity: "Oakland, CA",
+    familyMembers: [
+      {name:"Angela", relationship:"Mom", age: 70},
+      {name:"Ronin", relationship:"Son", age:14},
+      {name:"Abbey", relationship:"Daughter", age:6},
     ]
   })
 });
