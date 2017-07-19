@@ -1,7 +1,7 @@
  var mongoose = require('mongoose'),
   Schema = mongoose.Schema;
 
-var Vacation = new Schema({
+var VacationSchema = new Schema({
   vacationerName: String,
   country: String,
   year: Number,
