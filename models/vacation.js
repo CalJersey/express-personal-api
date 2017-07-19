@@ -4,6 +4,7 @@
 var VacationSchema = new Schema({
   vacationerName: String,
   country: String,
+  place: String,
   year: Number,
   daysStayed: Number,
   review: String,

@@ -54,6 +54,7 @@ app.get('/api', function apiIndex(req, res) {
       {method: "GET", path: "/api", description: "Describes all available endpoints"},
       {method: "GET", path: "/api/profile", description: "Data about me"},
       {method: "GET", path: "/api/vacation", description: "List of all vacations"},
+      {method: "GET", path: "/api/vacation/:Id", description: "Return 1 specific vacation"},
       {method: "POST", path: "/api/vacation", description: "Add new vacation to db"},
       {method: "PUT", path: "/api/vacation/:id", description: "Update a vacation"},
       {method: "DELETE", path: "/api/vacation/:id", description: "Delete a vacation"}
@@ -88,6 +89,64 @@ app.get('/api/vacation', function(req, res){
     }
   });
 });
+
+app.get('/api/vacation/:vacationId', function(req, res){
+  db.Vacation.findById(req.params.vacationId,function(err,vacation){
+    if (err){
+      console.log(`error: ${err}`);
+      res.status(500).json({error:err.message});
+    }
+    else {
+      res.json(vacation);
+    }
+  });
+});
+
+app.post('/api/vacation', function(req, res){
+  db.Vacation.create(req.body, function(err,newVacation){
+    if (err){
+      res.status(500).json({error:err.message});
+    }
+    else {
+      res.json(newVacation);
+    }
+  });
+});
+
+app.put('/api/vacation/:vacationId', function(req, res){
+  db.Vacation.findById(req.params.vacationId, function(err,vacation){
+    if (err) {
+      res.status(500).json({error: err.message});
+    }
+    else {
+      vacation.vacationerName = req.body.vacationerName;
+      vacation.country = req.body.country;
+      vacation.place = req.body.place;
+      vacation.year = req.body.year;
+      vacation.daysStayed = req.body.daysStayed;
+      vacation.review = req.body.review;
+      vacation.save(function(err,savedVacation){
+        if (err){
+          res.status(500).json({error:err.message});
+        }
+        else {
+          res.json(savedVacation);
+        }
+      });
+    }
+  });
+})
+
+app.delete('api/vacation/:vacationId', function(req,res){
+  db.Vacation.findOneAndRemove({_id: req.params.vacationId}, function(err,vacation){
+    if (err){
+      res.status(500).json({error: err.message});
+    }
+    else{
+      res.json(vacation);
+    }
+  });
+})
 
 /**********
  * SERVER *
