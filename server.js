@@ -78,7 +78,15 @@ app.get('/api/profile', function apiProfile(req, res){
 });
 
 app.get('/api/vacation', function(req, res){
-  db.Vacation.find({})
+  db.Vacation.find({},function(err,vacations){
+    if (err){
+      console.log(`error: ${err}`);
+      res.status(500).json({error:err.message});
+    }
+    else {
+      res.json(vacations);
+    }
+  });
 });
 
 /**********
