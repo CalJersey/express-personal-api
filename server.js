@@ -19,7 +19,7 @@ app.use(function(req, res, next) {
  * DATABASE *
  ************/
 
-// var db = require('./models');
+var db = require('./models');
 
 /**********
  * ROUTES *
@@ -47,13 +47,16 @@ app.get('/api', function apiIndex(req, res) {
   // It would be seriously overkill to save any of this to your database.
   // But you should change almost every line of this response.
   res.json({
-    message: "Welcome to my personal api! Here's what you need to know!",
+    message: "API for information about vacations people have taken.",
     documentationUrl: "https://github.com/caljersey/express-personal-api/README.md",
     baseUrl: "http://secret-hamlet-82924.herokuapp.com",
     endpoints: [
       {method: "GET", path: "/api", description: "Describes all available endpoints"},
       {method: "GET", path: "/api/profile", description: "Data about me"},
-      {method: "POST", path: "/api/campsites", description: "E.g. Create a new campsite"}
+      {method: "GET", path: "/api/vacation", description: "List of all vacations"},
+      {method: "POST", path: "/api/vacation", description: "Add new vacation to db"},
+      {method: "PUT", path: "/api/vacation/:id", description: "Update a vacation"},
+      {method: "DELETE", path: "/api/vacation/:id", description: "Delete a vacation"}
     ]
   })
 });
@@ -72,6 +75,10 @@ app.get('/api/profile', function apiProfile(req, res){
       {name:"Abbey", relationship:"Daughter", age:6},
     ]
   })
+});
+
+app.get('/api/vacation', function(req, res){
+  db.Vacation.find({})
 });
 
 /**********
