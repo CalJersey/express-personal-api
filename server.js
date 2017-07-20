@@ -53,7 +53,10 @@ app.get('/api', function apiIndex(req, res) {
     endpoints: [
       {method: "GET", path: "/api", description: "Describes all available endpoints"},
       {method: "GET", path: "/api/profile", description: "Data about me"},
-      {method: "GET", path: "/api/vacation", description: "List of all vacations"},
+      {method: "GET", path: "/api/vacation",
+        description: "List of all vacations. Can limit results with 'limit=x' in query string"},
+      {method: "GET", path: "/api/vacation/search",
+        description: "Search for vacations by place, and vacationer fields. Use 'q=string' in query string"},
       {method: "GET", path: "/api/vacation/:Id", description: "Return 1 specific vacation"},
       {method: "POST", path: "/api/vacation", description: "Add new vacation to db"},
       {method: "PUT", path: "/api/vacation/:id", description: "Update a vacation"},
@@ -102,7 +105,31 @@ app.get('/api/profile', function apiProfile(req, res){
 });
 
 app.get('/api/vacation', function(req, res){
-  db.Vacation.find({},function(err,vacations){
+  let limit = parseInt(req.query.limit) || 0;
+
+  db.Vacation.find({}).limit(limit).exec(function(err,vacations){
+    if (err){
+      console.log(`error: ${err}`);
+      res.status(500).json({error:err.message});
+    }
+    else {
+      res.json(vacations);
+    }
+  });
+});
+
+app.get('/api/vacation/search', function(req, res){
+  let search = req.query.q || "";
+  let objName = {};
+  let objPlace = {}
+  if (search.length){
+    objName.vacationerName = search;
+    objPlace.place = search;
+  }
+
+  db.Vacation.find({$or: [objName,objPlace]})
+    .collation({ locale: 'en_US', strength: 2 })
+    .exec(function(err,vacations){
     if (err){
       console.log(`error: ${err}`);
       res.status(500).json({error:err.message});
